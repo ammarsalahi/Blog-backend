@@ -1,35 +1,39 @@
 from django.db import models
 from utils.general_model import GeneralModel
+from django.contrib.auth import get_user_model
+
+User=get_user_model()
+
 
 class News(GeneralModel):
     
     title = models.CharField(
         max_length=1000,
     )
-    
+
     description = models.TextField()
 
     images=models.ManyToManyField(
-        null=True,
-        blank=True
+       'app.ImageBlog',
+        related_name="link_news",
+        blank=True,
     )
     files=models.ManyToManyField(
-        null=True,
-        blank=True
+        'app.FileBlog',
+        related_name="file_news",
+        blank=True,
     )
     links=models.ManyToManyField(
+        'app.LinkBlog',
+        related_name="link_news",
         blank=True,
-        null=True
     )
 
-    release_time = models.DateTimeField()
+    released_at = models.DateTimeField()
 
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING
+    )
     def __str__(self)->str:
         return self.title
-
-    #images
-    #files
-    #updated
-    #created 
-    #release time
-    #links
