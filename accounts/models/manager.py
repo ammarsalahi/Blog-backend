@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.is_superuser = is_superuser
         user.is_staff = is_staff
-        user.first_name = full_name
+        user.full_name = full_name
         user.is_active = True
         user.is_verified=True
         user.save(using=self._db)
@@ -50,7 +50,6 @@ class UserManager(BaseUserManager):
             email=email,
             is_superuser=False,
             is_staff=False,
-            first_name=first_name,
-            last_name=last_name,
+            full_name=full_name,
             password=password
         )

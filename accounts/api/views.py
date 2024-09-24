@@ -1,4 +1,4 @@
-from rest_framework import viewsets,views
+from rest_framework import viewsets,views,response
 from accounts.models import User
 from .serializers import UserSerializer,UserTokenSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -24,8 +24,10 @@ class UserSignupView(views.APIView):
             full_name=data['fullname']
         )
         refresh = RefreshToken.for_user(user)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-            'username':user.username
-        }
+        return response.Response(
+            data={
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'username':user.username
+            }
+        )
