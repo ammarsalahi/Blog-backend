@@ -1,11 +1,11 @@
-from django_filters import FilterSet
-
+from django_filters import FilterSet,CharFilter
+from app.models import News
 
 class NewsFilter(FilterSet):
     q=CharFilter(method='search_project')
     sort=CharFilter(method='sorting')
     class Meta:
-        model=Project
+        model=News
         fields=('q','sort')
 
     def search_post(self,queryset,name,value):

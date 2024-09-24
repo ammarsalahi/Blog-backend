@@ -11,5 +11,5 @@ router.register('links',LinkViewset,basename="app_links")
 router.register('files',FileViewset,basename="app_files")
 
 
-urlpatterns = router.urls()
+urlpatterns = router.urls
 

@@ -1,5 +1,6 @@
 from rest_framework import routers
 from .views import UserViewset,UserSigninView,UserSignupView
+from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -10,7 +11,7 @@ router=routers.DefaultRouter()
 router.register('users',UserViewset,basename="users")
 
 
-urlpatterns = router.urls()
+urlpatterns = router.urls
 
 urlpatterns+=[
 

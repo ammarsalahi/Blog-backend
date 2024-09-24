@@ -2,8 +2,6 @@ from django.db import models
 from utils.general_model import GeneralModel
 from django.contrib.auth import get_user_model
 
-User=get_user_model()
-
 
 class News(GeneralModel):
     
@@ -32,8 +30,20 @@ class News(GeneralModel):
     released_at = models.DateTimeField()
 
     creator = models.ForeignKey(
-        User,
+        'accounts.User',
         on_delete=models.DO_NOTHING
     )
+
     def __str__(self)->str:
         return self.title
+
+    @property
+    def total_size(self):
+        total=0
+        for fileojbect in self.files.all():
+            if fileobject.file:
+                total+=fileojbect.file.size 
+        total_kb=total/1024
+        total_mb=total_kb/1024
+        total_gb=total_mb/1024
+        return total_mb         
