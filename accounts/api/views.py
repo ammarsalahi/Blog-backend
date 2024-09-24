@@ -9,5 +9,3 @@ class UserViewset(viewsets.ModelViewSet):
     serializer_class=UserSerializer
 
 
-class UserSignin(views.APIView):
-    pass
