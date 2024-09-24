@@ -27,16 +27,36 @@ class News(GeneralModel):
         blank=True,
     )
 
-    released_at = models.DateTimeField()
+    # released_at = models.DateTimeField()
+    next_days = models.IntegerField(
+        default=0
+    )
+    next_hours = models.IntegerField(
+        default=0
+    )
+    next_minutes = models.IntegerField(
+        default=0
+    )
 
     creator = models.ForeignKey(
         'accounts.User',
         on_delete=models.DO_NOTHING
     )
-
+    types=models.CharField(
+        max_length=100,
+        default="center"
+    )
     def __str__(self)->str:
         return self.title
 
+    @property
+    def get_full_next(self)->str:
+        return f"{next_days}days's {next_hours}hour's and {next_minutes}minutes"
+
+    @property 
+    def time_duration(self):
+        full_time = (self.next_hours*3600) + (self.next_minutes*60)
+        return full_time
     @property
     def total_size(self):
         total=0

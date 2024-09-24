@@ -3,4 +3,8 @@ from django.db import models
 
 
 class LinkBlog(GeneralModel):
-    url=models.URLField(unique=True)
+    text=models.CharField(
+        max_length=300,
+        blank=True
+    )
+    href=models.URLField(blank=True)
