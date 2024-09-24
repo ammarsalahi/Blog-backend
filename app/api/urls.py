@@ -3,7 +3,7 @@ from .views import *
 router = routers.DefaultRouter()
 
 
-app_name="Apps"
+app_name="blogs"
 
 router.register('news',NewsModelset,basename="app_news")
 router.register('images',ImageViewset,basename="app_images")

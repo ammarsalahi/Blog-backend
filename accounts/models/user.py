@@ -7,16 +7,10 @@ from .manager import UserManager
 #     return 'users/photo/userimg.png'
 
 class User(AbstractBaseUser):
-    first_name = models.CharField(
-        max_length=300,
+    full_name = models.CharField(
+        max_length=500,
         null=True,
         blank=True
-    )
-    last_name = models.CharField(
-        max_length=300,
-        null=True,
-        blank=True
-
     )
     username = models.CharField(
         max_length=200,
@@ -33,6 +27,9 @@ class User(AbstractBaseUser):
         default=False
     )
     is_active = models.BooleanField(
+        default=False
+    )
+    is_two_factor_auth =models.BooleanField(
         default=False
     )
     created_at = models.DateTimeField(
