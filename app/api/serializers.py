@@ -27,4 +27,9 @@ class NewSerializer(serializers.ModelSerializer):
         model=News
         fields="__all__"
 
-        
+    def to_representation(self, instance):
+        data = super(PostSerializer, self).to_representation(instance)   
+        data['images'] = ImageSerializer(instance=instance.images.all(),many=True).data
+        data['links'] = LinkSerializer(instance=instance.links.all(),many=True).data
+        data['files'] = FileSerializer(instance=instance.files.all(),many=True).data
+        return data 
