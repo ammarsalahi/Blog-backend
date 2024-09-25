@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import dj_database_url
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -96,7 +97,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
 
-    default: dj_database_url.config(default=os.getenv("DATABSE_URL"))
+    'default': dj_database_url.config(default=os.getenv("DATABSE_URL"))
     # 'default': {
 
     #     'ENGINE': 'django.db.backends.postgresql',
