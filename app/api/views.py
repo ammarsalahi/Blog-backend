@@ -41,7 +41,6 @@ class NewsCreateView(views.APIView):
 
         images = request.FILES.getlist('images')
         links = request.data.getlist('links') 
-        print(links)
 
         user = request.user  # Assumes authentication is in place
 
