@@ -8,9 +8,14 @@ pip --version
 in project folder do this commands
 
 --- pipenv shell
+
 --- pipenv run pip install -r requirements.txt 
+
 --- python manage.py makemigrations app accounts
+
 --- python manage.py migrate 
+
 --- python mamange.py runserver 8000
+
 
 now run frontend !
