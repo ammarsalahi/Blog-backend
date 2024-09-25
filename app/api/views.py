@@ -41,7 +41,7 @@ class NewsCreateView(views.APIView):
 
         images = request.FILES.getlist('images')
         links = request.data.getlist('links') 
-
+        print(request.data)
         user = request.user  # Assumes authentication is in place
 
         # Create the News object
@@ -60,7 +60,7 @@ class NewsCreateView(views.APIView):
 
         # Save the provided links
         for link_url in links:
-            link_blog = LinkBlog.objects.create(url=link_url)
+            link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
             news.links.add(link_blog)
 
         news.save()

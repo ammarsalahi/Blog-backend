@@ -34,9 +34,9 @@ class NewSerializer(serializers.ModelSerializer):
         data['links'] = LinkSerializer(instance=instance.links.all(),many=True).data
         # counts
         data['images_count']= instance.images.count()
-        data['links'] = instance.links.count()
+        data['links_count'] = instance.links.count()
 
         #size
-        # data['total_file_size']=instance.total_size
+        data['total_size']=instance.total_size
         
         return data 

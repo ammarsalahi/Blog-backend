@@ -49,13 +49,19 @@ class News(GeneralModel):
     # def time_duration(self):
     #     full_time = (self.next_hours*3600) + (self.next_minutes*60)
     #     return full_time
-    # @property
-    # def total_size(self):
-    #     total=0
-    #     for fileojbect in self.files.all():
-    #         if fileobject.file:
-    #             total+=fileojbect.file.size 
-    #     total_kb=total/1024
-    #     total_mb=total_kb/1024
-    #     total_gb=total_mb/1024
-    #     return total_mb         
+    @property
+    def total_size(self):
+        total=0
+        for img in self.images.all():
+            if img.image:
+                total+=img.image.size 
+        total_kb=round(total/1024,2)
+        total_mb=round(total_kb/1024)
+        total_gb=round(total_mb/1024)
+        if total_kb > 1000:
+            return f"{total_mb} MB"
+        elif total_mb > 1000:
+            return f"{total_gb} GB"
+        else:
+            return f"{total_kb} KB"
+        
