@@ -40,7 +40,7 @@ class NewsCreateView(views.APIView):
         timer_duration = int(request.data.get('timer_duration', 0))
 
         images = request.FILES.getlist('images')
-        links = request.data.getlist('links')
+        links = request.data.getlist('links') 
 
         user = request.user  # Assumes authentication is in place
 
