@@ -16,25 +16,17 @@ class News(GeneralModel):
         related_name="link_news",
         blank=True,
     )
-    files=models.ManyToManyField(
-        'app.FileBlog',
-        related_name="file_news",
-        blank=True,
-    )
+  
     links=models.ManyToManyField(
         'app.LinkBlog',
         related_name="link_news",
         blank=True,
     )
-
+    is_timer_enabled = models.BooleanField(
+        default=False
+    )
     # released_at = models.DateTimeField()
-    next_days = models.IntegerField(
-        default=0
-    )
-    next_hours = models.IntegerField(
-        default=0
-    )
-    next_minutes = models.IntegerField(
+    timer_duration = models.IntegerField(
         default=0
     )
 
@@ -53,17 +45,17 @@ class News(GeneralModel):
     def get_full_next(self)->str:
         return f"{next_days}days's {next_hours}hour's and {next_minutes}minutes"
 
-    @property 
-    def time_duration(self):
-        full_time = (self.next_hours*3600) + (self.next_minutes*60)
-        return full_time
-    @property
-    def total_size(self):
-        total=0
-        for fileojbect in self.files.all():
-            if fileobject.file:
-                total+=fileojbect.file.size 
-        total_kb=total/1024
-        total_mb=total_kb/1024
-        total_gb=total_mb/1024
-        return total_mb         
+    # @property 
+    # def time_duration(self):
+    #     full_time = (self.next_hours*3600) + (self.next_minutes*60)
+    #     return full_time
+    # @property
+    # def total_size(self):
+    #     total=0
+    #     for fileojbect in self.files.all():
+    #         if fileobject.file:
+    #             total+=fileojbect.file.size 
+    #     total_kb=total/1024
+    #     total_mb=total_kb/1024
+    #     total_gb=total_mb/1024
+    #     return total_mb         

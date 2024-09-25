@@ -141,10 +141,22 @@ MEDIA_ROOT=BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
 }
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Token lifetime (example: 30 minutes)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Refresh token lifetime (example: 1 day)
+}
+
+
 
 AUTH_USER_MODEL = 'accounts.User'
 
