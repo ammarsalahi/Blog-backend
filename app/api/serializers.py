@@ -38,5 +38,11 @@ class NewSerializer(serializers.ModelSerializer):
 
         #size
         data['total_size']=instance.total_size
+
+        data['days'] = instance.duration_days
+        data['hours'] = instance.duration_hours
+        data['minutes'] = instance.duration_minutes
+
+
         
         return data 

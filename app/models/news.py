@@ -64,4 +64,25 @@ class News(GeneralModel):
             return f"{total_gb} GB"
         else:
             return f"{total_kb} KB"
+
+    @property
+    def duration_days(self):
+        if self.is_timer_enabled:
+            return self.timer_duration // 86400
+        return 0    
+
+    @property
+    def duration_hours(self):
+        if self.is_timer_enabled:
+            remaining = self.timer_duration // 86400
+            minutes = remaining //3600
+        return 0
+
+    @property
+    def duration_minutes(self):
+        if self.is_timer_enabled:
+            remaining = self.timer_duration // 3600
+            minutes = remaining //3600
+        return 0
+                
         
