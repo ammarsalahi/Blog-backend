@@ -97,16 +97,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
 
-    'default': dj_database_url.config(default=os.getenv("DATABSE_URL"))
-    # 'default': {
+    # 'default': dj_database_url.config(default=os.getenv("DATABSE_URL"))
+    'default': {
 
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'blog-app-db',
-    #     'USER': 'root',
-    #     'PASSWORD': 'KYXSnYk1cyKyN2ekCEv8KFXY',
-    #     'HOST': 'blog-app-db',
-    #     'PORT': '5432',
-    # }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'USER': os.getenv('db_user'),
+        'PASSWORD': os.getenv('db_pass'),
+        'HOST': os.getenv('db_host'),
+        'PORT': '5432',
+    }
 
 }
 
