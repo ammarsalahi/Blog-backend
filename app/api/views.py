@@ -24,9 +24,6 @@ class LinkViewset(viewsets.ModelViewSet):
     queryset = LinkBlog.objects.all()
     serializer_class = LinkSerializer
 
-class FileViewset(viewsets.ModelViewSet):
-    queryset = FileBlog.objects.all()
-    serializer_class = FileSerializer
 
 class NewsCreateView(views.APIView):
     authentication_classes = [JWTAuthentication]
@@ -41,7 +38,6 @@ class NewsCreateView(views.APIView):
 
         images = request.FILES.getlist('images')
         links = request.data.getlist('links') 
-        print(request.data)
         user = request.user  # Assumes authentication is in place
 
         # Create the News object

@@ -1,7 +1,7 @@
 from django.db import models
 from utils.general_model import GeneralModel
 from django.contrib.auth import get_user_model
-
+from datetime import datetime,timedelta
 
 class News(GeneralModel):
     
@@ -30,6 +30,11 @@ class News(GeneralModel):
         default=0
     )
 
+    publish_date=models.DateTimeField(
+        blank=True
+    )
+
+
     creator = models.ForeignKey(
         'accounts.User',
         on_delete=models.DO_NOTHING
@@ -38,6 +43,14 @@ class News(GeneralModel):
         max_length=100,
         default="center"
     )
+    
+    def save(self, *args, **kwargs):
+
+        if self.publish_date is None:
+            self.publish_date = datetime.now() + timedelta(days=duration_days,hours=duration_hours,minutes=duration_minutes)
+            
+        super().save(*args, **kwargs)
+        
     def __str__(self)->str:
         return self.title
 
@@ -84,5 +97,13 @@ class News(GeneralModel):
             remaining = self.timer_duration // 3600
             minutes = remaining //3600
         return 0
-                
+
+    @property
+    def is_published_now(self):    
+        now_date= datetime.now()
+        if now_date > self.publish_date:
+            return True
+        else:
+            return False    
+
         

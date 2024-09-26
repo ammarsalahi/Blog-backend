@@ -10,12 +10,6 @@ class ImageSerializer(serializers.ModelSerializer):
         fields="__all__"        
 
 
-class FileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=FileBlog
-        fields="__all__"  
-
-
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model=LinkBlog
@@ -39,9 +33,11 @@ class NewSerializer(serializers.ModelSerializer):
         #size
         data['total_size']=instance.total_size
 
+        #publish data
         data['days'] = instance.duration_days
         data['hours'] = instance.duration_hours
         data['minutes'] = instance.duration_minutes
+        data['is_published'] = instance.is_published_now
 
 
         
