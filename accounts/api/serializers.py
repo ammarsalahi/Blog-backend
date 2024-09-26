@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User
+from accounts.models import User,Profile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -15,4 +15,5 @@ class UserTokenSerializer(TokenObtainPairSerializer):
         user = self.user
         data["username"] = user.username
         data['is_admin']=user.is_superuser
+        data['is_otp'] = user.is_two_factor_auth
         return data          
