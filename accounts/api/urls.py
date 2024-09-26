@@ -1,5 +1,5 @@
 from rest_framework import routers
-from .views import UserViewset,UserSigninView,UserSignupView
+from .views import *
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -19,4 +19,5 @@ urlpatterns+=[
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/',UserSignupView.as_view(),name="signup"),
     path('signin/',UserSigninView.as_view(),name="signin"),
+    path('otp/',OtpGenerateView.as_view()),
 ]
