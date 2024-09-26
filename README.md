@@ -9,7 +9,7 @@ in project folder do this commands
 
      python -m venv env
 
-     .\myenv\Scripts\Activate
+     env\Scripts\Activate
 
      pip install -r requirements.txt 
 
