@@ -17,3 +17,8 @@ class UserTokenSerializer(TokenObtainPairSerializer):
         data['is_admin']=user.is_superuser
         data['is_otp'] = user.is_two_factor_auth
         return data          
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Profile
+        fields="__all__"        

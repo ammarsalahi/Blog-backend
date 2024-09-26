@@ -1,6 +1,6 @@
 from rest_framework import viewsets,views,response
 from accounts.models import User,Profile
-from .serializers import UserSerializer,UserTokenSerializer
+from .serializers import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 import pyotp
@@ -14,6 +14,9 @@ class UserViewset(viewsets.ModelViewSet):
     serializer_class=UserSerializer
     lookup_field="username"
 
+class ProfileViewset(viewsets.ModelViewSet):
+    queryset=Profile.objects.all().order_by('-created_at')
+    serializer_class=ProfileSerializer
 
 class UserSigninView(TokenObtainPairView):
     serializer_class=UserTokenSerializer 
