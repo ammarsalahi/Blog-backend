@@ -7,9 +7,11 @@ install dependencies like this (in cmd):
 
 in project folder do this commands
 
-     pipenv shell
+     python -m venv env
 
-     pipenv run pip install -r requirements.txt 
+     .\myenv\Scripts\Activate
+
+     pip install -r requirements.txt 
 
      python manage.py makemigrations app accounts
 
