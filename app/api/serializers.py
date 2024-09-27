@@ -42,3 +42,8 @@ class NewSerializer(serializers.ModelSerializer):
 
         
         return data 
+
+class NewsViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=NewsView
+        fields="__all__"  

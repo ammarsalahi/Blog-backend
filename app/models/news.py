@@ -1,7 +1,7 @@
 from django.db import models
 from utils.general_model import GeneralModel
-from django.contrib.auth import get_user_model
-from datetime import datetime,timedelta
+from django.utils import timezone  # Use timezone-aware datetime
+from datetime import timedelta
 
 class News(GeneralModel):
     
@@ -25,13 +25,14 @@ class News(GeneralModel):
     is_timer_enabled = models.BooleanField(
         default=False
     )
-    # released_at = models.DateTimeField()
+    
     timer_duration = models.IntegerField(
         default=0
     )
 
     publish_date=models.DateTimeField(
-        blank=True
+        blank=True,
+        null=True
     )
 
 
@@ -43,13 +44,9 @@ class News(GeneralModel):
         max_length=100,
         default="center"
     )
-    
-    def save(self, *args, **kwargs):
-
-        if self.publish_date is None:
-            self.publish_date = datetime.now() + timedelta(days=duration_days,hours=duration_hours,minutes=duration_minutes)
-            
-        super().save(*args, **kwargs)
+    views=models.IntegerField(
+        default=0
+    )
         
     def __str__(self)->str:
         return self.title
@@ -58,10 +55,7 @@ class News(GeneralModel):
     def get_full_next(self)->str:
         return f"{next_days}days's {next_hours}hour's and {next_minutes}minutes"
 
-    # @property 
-    # def time_duration(self):
-    #     full_time = (self.next_hours*3600) + (self.next_minutes*60)
-    #     return full_time
+    
     @property
     def total_size(self):
         total=0
@@ -100,10 +94,21 @@ class News(GeneralModel):
 
     @property
     def is_published_now(self):    
-        now_date= datetime.now()
-        if now_date > self.publish_date:
-            return True
-        else:
-            return False    
+        now_date = timezone.now()  # Get timezone-aware current date
+        if self.publish_date is not None:
+            if now_date > self.publish_date:
+                return True
+            else:
+                return False    
+        return False
+            
+    def save(self, *args, **kwargs):
+        if self.publish_date is None:
+            self.publish_date = timezone.now() + timedelta(
+                days=self.duration_days,
+                hours=self.duration_hours,
+                minutes=self.duration_minutes
+            )
+        super().save(*args, **kwargs)
 
-        
+

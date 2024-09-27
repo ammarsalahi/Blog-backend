@@ -24,6 +24,9 @@ class LinkViewset(viewsets.ModelViewSet):
     queryset = LinkBlog.objects.all()
     serializer_class = LinkSerializer
 
+class NewsViewsViewset(viewsets.ModelViewSet):
+    queryset = NewsView.objects.all()
+    serializer_class = NewsViewSerializer
 
 class NewsCreateView(views.APIView):
     authentication_classes = [JWTAuthentication]
@@ -62,3 +65,29 @@ class NewsCreateView(views.APIView):
         news.save()
 
         return response.Response({"message": "News post created successfully"}, status=status.HTTP_201_CREATED)    
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+class NewsViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        news = get_object_or_404(News, pk=pk)
+        serializer = NewsSerializer(news)
+
+        # Get client IP address
+        ip = get_client_ip(request)
+
+        # Check if this IP address has already viewed this news article
+        if not NewsView.objects.filter(news=news, ip_address=ip).exists():
+            # Increment view count if it's a unique view
+            NewsView.objects.create(news=news, ip_address=ip)
+            news.views += 1
+            news.save()
+
+        return Response(serializer.data)           

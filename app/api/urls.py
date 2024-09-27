@@ -10,7 +10,8 @@ app_name="blogs"
 router.register('news',NewsModelset,basename="app_news")
 router.register('images',ImageViewset,basename="app_images")
 router.register('links',LinkViewset,basename="app_links")
-
+router.register('neews-view',NewsViewsViewset,basename="news-view")
+router.register('news-review',NewsViewSet,basename="news-reviews")
 
 urlpatterns = router.urls
 
