@@ -7,7 +7,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+import calendar
 
 User=get_user_model()
 class NewsModelset(viewsets.ModelViewSet):
@@ -81,15 +83,73 @@ class NewsViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         news = News.objects.get(id=pk)
         serializer = NewSerializer(news)
-
-        # Get client IP address
         ip = get_client_ip(request)
+        try:
 
-        # Check if this IP address has already viewed this news article
-        if not NewsView.objects.filter(news=news, ip_address=ip).exists():
-            # Increment view count if it's a unique view
-            NewsView.objects.create(news=news, ip_address=ip)
-            news.views += 1
+            if not NewsView.objects.filter(news=news, ip_address=ip).exists():
+                NewsView.objects.create(news=news, ip_address=ip)
+                news.views += 1
+        except HttpException as e:
+            print(f"${str(e)}")   
+        finally:
             news.save()
+            return response.Response(serializer.data)           
 
-        return response.Response(serializer.data)           
+class NewsChartView(views.APIView):
+    def get(self,request,format=None):
+        post_views = (NewsView.objects
+                  .annotate(month=TruncMonth('created_at'))
+                  .values('month')
+                  .annotate(view_count=Count('id'))
+                  .order_by('month'))
+
+        data = {
+            'months': [calendar.month_name[item['month'].month] for item in post_views],
+            'view_counts': [item['view_count'] for item in post_views]
+        }
+
+        return response.Response(data)
+               
+
+
+# from rest_framework.decorators import api_view
+# from rest_framework.response import Response
+# import calendar
+# from .models import BlogPostView
+
+# @api_view(['GET'])
+# def blog_post_views_by_month_api(request):
+#     # Aggregate view counts by month for all blog posts
+#     post_views = (BlogPostView.objects
+#                   .annotate(month=TruncMonth('timestamp'))
+#                   .values('month')
+#                   .annotate(view_count=Count('id'))
+#                   .order_by('month'))
+
+#     # Format data to return month names and counts
+#     data = {
+#         'months': [calendar.month_name[item['month'].month] for item in post_views],
+#         'view_counts': [item['view_count'] for item in post_views]
+#     }
+
+#     return Response(data)
+
+# from rest_framework.response import Response
+# import calendar
+# from .models import BlogPostView
+
+# @api_view(['GET'])
+# def blog_post_views_by_month_api(request, post_id):
+#     post_views = (BlogPostView.objects.filter(post_id=post_id)
+#                   .annotate(month=TruncMonth('timestamp'))
+#                   .values('month')
+#                   .annotate(view_count=Count('id'))
+#                   .order_by('month'))
+
+#     # Format data to return month names and counts
+#     data = {
+#         'months': [calendar.month_name[item['month'].month] for item in post_views],
+#         'view_counts': [item['view_count'] for item in post_views]
+#     }
+
+#     return Response(data)
