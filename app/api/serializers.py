@@ -14,6 +14,12 @@ class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model=LinkBlog
         fields="__all__"        
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=FileBlog
+        fields="__all__"        
+                
         
 
 class NewSerializer(serializers.ModelSerializer):

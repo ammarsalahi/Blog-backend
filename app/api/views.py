@@ -28,6 +28,11 @@ class LinkViewset(viewsets.ModelViewSet):
     queryset = LinkBlog.objects.all()
     serializer_class = LinkSerializer
 
+class FileViewset(viewsets.ModelViewSet):
+    queryset - FileBlog.objects.all()
+    serializer_class = FileSerializer
+        
+
 class NewsViewsViewset(viewsets.ModelViewSet):
     queryset = NewsView.objects.all()
     serializer_class = NewsViewSerializer
@@ -45,6 +50,7 @@ class NewsCreateView(views.APIView):
 
         images = request.FILES.getlist('images')
         links = request.data.getlist('links') 
+        files  = request.FILES.getlist('files')
         user = request.user  # Assumes authentication is in place
 
         # Create the News object
@@ -66,6 +72,9 @@ class NewsCreateView(views.APIView):
             link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
             news.links.add(link_blog)
 
+        for f in links:
+            file_blog = FileBlog.objects.create(file=f)
+            news.files.add(file_blog)
         news.save()
 
         return response.Response({"message": "News post created successfully"}, status=status.HTTP_201_CREATED)    

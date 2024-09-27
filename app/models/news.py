@@ -13,7 +13,7 @@ class News(GeneralModel):
 
     images=models.ManyToManyField(
        'app.ImageBlog',
-        related_name="link_news",
+        related_name="image_news",
         blank=True,
     )
   
@@ -22,6 +22,13 @@ class News(GeneralModel):
         related_name="link_news",
         blank=True,
     )
+
+    files=models.ManyToManyField(
+       'app.FileBlog',
+        related_name="file_news",
+        blank=True,
+    )
+
     is_timer_enabled = models.BooleanField(
         default=False
     )
@@ -59,12 +66,13 @@ class News(GeneralModel):
     @property
     def total_size(self):
         total=0
-        for img in self.images.all():
-            if img.image:
-                total+=img.image.size 
-        total_kb=round(total/1024,2)
-        total_mb=round(total_kb/1024)
-        total_gb=round(total_mb/1024)
+        for f in self.files.all():
+            if f.file:
+                total+=f.file.size 
+        total_kb=round(total/1024,0)
+        total_mb=round(total_kb/1024,0)
+        total_gb=round(total_mb/1024,0)
+
         if total_kb > 1000:
             return f"{total_mb} MB"
         elif total_mb > 1000:
