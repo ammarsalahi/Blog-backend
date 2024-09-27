@@ -53,6 +53,8 @@ class NewsCreateView(views.APIView):
         files  = request.FILES.getlist('files')
         user = request.user  # Assumes authentication is in place
 
+
+        print(request.data)
         # Create the News object
         news = News.objects.create(
             title=title,
@@ -87,6 +89,49 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+class NewsUpdateView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]  # For handling file uploads
+
+    def patch(self, request,id, *args, **kwargs):
+        title = request.data.get('title')
+        content = request.data.get('description')
+        is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
+        timer_duration = int(request.data.get('timer_duration', 0))
+
+        images = request.FILES.getlist('images')
+        links = request.data.getlist('links') 
+        files  = request.FILES.getlist('files')
+
+        try:
+
+            news = News.objects.get(id=id)
+            news.title=title
+            news.description=content
+            news.is_timer_enabled=is_timer_enabled
+            news.timer_duration=timer_duration
+        # Save the uploaded images
+            for image_file in images:
+                image_blog = ImageBlog.objects.create(image=image_file)
+                news.images.add(image_blog)
+
+            # Save the provided links
+            for link_url in links:
+                link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
+                news.links.add(link_blog)
+
+            for f in files:
+                file_blog = FileBlog.objects.create(file=f)
+                news.files.add(file_blog)
+            news.save()
+        except News.DoesNotExist:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)    
+
+        return response.Response( status=status.HTTP_200_CREATED)    
+
+
 
 class NewsViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
