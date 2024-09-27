@@ -114,8 +114,10 @@ class News(GeneralModel):
     def duration_last_time(self):
         now_date=timezone.now()
         if self.publish_date is not None:
-            result=now_date - self.publish_date
-            return result.total_seconds()
+            if self.publish_date > now_date:
+                result=now_date - self.publish_date
+                return result.total_seconds()
+            return 0    
 
 
     def save(self, *args, **kwargs):
