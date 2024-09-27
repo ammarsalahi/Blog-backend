@@ -46,6 +46,7 @@ class NewSerializer(serializers.ModelSerializer):
         data['hours'] = instance.duration_hours
         data['minutes'] = instance.duration_minutes
         data['is_published'] = instance.is_published_now
+        data['last_duration']=instance.duration_last_time
 
 
         
