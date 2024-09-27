@@ -104,7 +104,8 @@ class NewsUpdateView(views.APIView):
         images = request.FILES.getlist('images')
         links = request.data.getlist('links') 
         files  = request.FILES.getlist('files')
-
+        print(request.data)
+        
         try:
             news = News.objects.get(id=pk)
             news.title=title
@@ -112,18 +113,27 @@ class NewsUpdateView(views.APIView):
             news.is_timer_enabled=is_timer_enabled
             news.timer_duration=timer_duration
         # Save the uploaded images
-            for image_file in images:
-                image_blog = ImageBlog.objects.create(image=image_file)
-                news.images.add(image_blog)
+            if request.data.get('images')=='null':
+                news.images.clear()
+            else:
+                for image_file in images:
+                    image_blog = ImageBlog.objects.create(image=image_file)
+                    news.images.add(image_blog)
 
+            if request.data.get('links')=='null':
+                news.links.clear()
+            else:
             # Save the provided links
-            for link_url in links:
-                link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
-                news.links.add(link_blog)
-
-            for f in files:
-                file_blog = FileBlog.objects.create(file=f)
-                news.files.add(file_blog)
+                for link_url in links:
+                    link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
+                    news.links.add(link_blog)
+            
+            if request.data.get('files')=='null':
+                news.files.clear()
+            else:
+                for f in files:
+                    file_blog = FileBlog.objects.create(file=f)
+                    news.files.add(file_blog)
             news.save()
         except News.DoesNotExist:
             return response.Response(status=status.HTTP_404_NOT_FOUND)    
