@@ -110,6 +110,14 @@ class News(GeneralModel):
                 return False    
         return False
             
+    @property
+    def duration_last_time(self):
+        now_date=timezone.now()
+        if self.publish_date is not None:
+            result=now_date - self.publish_date
+            return result.total_seconds()
+
+
     def save(self, *args, **kwargs):
         if self.publish_date is None:
             self.publish_date = timezone.now() + timedelta(
