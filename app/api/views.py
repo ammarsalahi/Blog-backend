@@ -29,7 +29,7 @@ class LinkViewset(viewsets.ModelViewSet):
     serializer_class = LinkSerializer
 
 class FileViewset(viewsets.ModelViewSet):
-    queryset - FileBlog.objects.all()
+    queryset = FileBlog.objects.all()
     serializer_class = FileSerializer
         
 
@@ -72,7 +72,7 @@ class NewsCreateView(views.APIView):
             link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
             news.links.add(link_blog)
 
-        for f in links:
+        for f in files:
             file_blog = FileBlog.objects.create(file=f)
             news.files.add(file_blog)
         news.save()

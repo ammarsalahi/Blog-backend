@@ -32,9 +32,11 @@ class NewSerializer(serializers.ModelSerializer):
         # many-to-many data
         data['images'] = ImageSerializer(instance=instance.images.all(),many=True).data
         data['links'] = LinkSerializer(instance=instance.links.all(),many=True).data
+        data['files'] = FileSerializer(instance=instance.files.all(),many=True).data
         # counts
         data['images_count']= instance.images.count()
         data['links_count'] = instance.links.count()
+        data['files_count'] = instance.files.count()
 
         #size
         data['total_size']=instance.total_size
