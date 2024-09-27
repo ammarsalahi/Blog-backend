@@ -13,6 +13,8 @@ User=get_user_model()
 class NewsModelset(viewsets.ModelViewSet):
     queryset=News.objects.all()
     serializer_class=NewSerializer
+
+
     # pagination_class=NewsPagination
     # filter_backends= [NewsFilter]
 
@@ -77,8 +79,8 @@ def get_client_ip(request):
 
 class NewsViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        news = get_object_or_404(News, pk=pk)
-        serializer = NewsSerializer(news)
+        news = News.objects.get(id=pk)
+        serializer = NewSerializer(news)
 
         # Get client IP address
         ip = get_client_ip(request)
@@ -90,4 +92,4 @@ class NewsViewSet(viewsets.ViewSet):
             news.views += 1
             news.save()
 
-        return Response(serializer.data)           
+        return response.Response(serializer.data)           
