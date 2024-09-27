@@ -95,7 +95,7 @@ class NewsUpdateView(views.APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]  # For handling file uploads
 
-    def patch(self, request,id, *args, **kwargs):
+    def patch(self, request,pk, *args, **kwargs):
         title = request.data.get('title')
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
@@ -106,8 +106,7 @@ class NewsUpdateView(views.APIView):
         files  = request.FILES.getlist('files')
 
         try:
-
-            news = News.objects.get(id=id)
+            news = News.objects.get(id=pk)
             news.title=title
             news.description=content
             news.is_timer_enabled=is_timer_enabled
@@ -129,7 +128,7 @@ class NewsUpdateView(views.APIView):
         except News.DoesNotExist:
             return response.Response(status=status.HTTP_404_NOT_FOUND)    
 
-        return response.Response( status=status.HTTP_200_CREATED)    
+        return response.Response( status=status.HTTP_200_OK)    
 
 
 

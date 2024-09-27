@@ -18,7 +18,7 @@ urlpatterns = router.urls
 
 urlpatterns += [
     path('add-news/',NewsCreateView.as_view()),
-    path('update-news/',NewsUpdateView.as_view()),
+    path('edit-news/<int:pk>/',NewsUpdateView.as_view()),
     path('news-review/<int:pk>/',NewsViewSet.as_view({'get':'retrieve'})),
     path("chart-news/",NewsChartView.as_view())
 ]

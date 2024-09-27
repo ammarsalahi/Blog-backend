@@ -8,6 +8,7 @@ import qrcode
 from io import BytesIO
 from django.http import JsonResponse, HttpResponse
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 class UserViewset(viewsets.ModelViewSet):
     queryset=User.objects.all().order_by('-created_at')
@@ -87,3 +88,9 @@ class OtpGenerateView(views.APIView):
             return JsonResponse({'success': True, 'message': 'OTP verified successfully'})
         else:
             return JsonResponse({'success': False, 'message': 'Invalid OTP'})    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_jwt_token(request):
+    return response.Response({"message": "Token is valid", "user": request.user.username})            
