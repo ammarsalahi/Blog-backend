@@ -21,6 +21,7 @@ urlpatterns+=[
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/',UserSignupView.as_view(),name="signup"),
     path('signin/',UserSigninView.as_view(),name="signin"),
+    path('check-password/',CheckUserPassword.as_view()),
     path('otp/',OtpGenerateView.as_view()),
     path('new-otp/',get_new_otp),
     path("check-token/",check_jwt_token),

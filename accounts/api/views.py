@@ -1,4 +1,4 @@
-from rest_framework import viewsets,views,response
+from rest_framework import viewsets,views,response,status
 from accounts.models import User,Profile
 from .serializers import *
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -51,6 +51,18 @@ class UserSignupView(views.APIView):
             }
         )
 
+class CheckUserPassword(views.APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self,request,format=None):
+        user=request.user
+        if user.check_password(request.data['oldpass']):
+            return response.Response(status=status.HTTP_201_CREATED)
+        else:
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)    
+
+
+
+
 class OtpGenerateView(views.APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request,format=None):
@@ -59,36 +71,14 @@ class OtpGenerateView(views.APIView):
         serializer=ProfileSerializer(instance=profile)
         return response.Response(data=serializer.data)
 
-        # secret = pyotp.random_base32()        
-        # profile=Profile.objects.get(user=user)
-        # profile.otp_code=secret
-        # profile.save()
-        
-        # totp = pyotp.TOTP(secret)
-        
-        # qr_url = totp.provisioning_uri(user.email, issuer_name="BlogApp")
-        
-        # qr_img = qrcode.make(qr_url)
-        
-        # buffer = BytesIO()
-        # qr_img.save(buffer, format="PNG")
-        # buffer.seek(0)
-        # file_name = f'{user.username}_otp_qr.png'  # You can customize the file name
-        # profile.qrcode_image.save(file_name, File(buffer), save=True)  # Save to the ImageField
-
-        
-        # return HttpResponse(buffer, content_type="image/png")
 
     def post(self,request,format=None):
         user = request.user
         otp = request.data.get('otp')
         
-        # Retrieve the user's secret key (saved in profile or database)
         secret = Profile.objects.get(user=user).otp_code
-        # Create a TOTP object using the saved secret
         totp = pyotp.TOTP(secret)
         
-        # Verify the OTP entered by the user
         if totp.verify(otp):
             return JsonResponse({'success': True, 'message': 'OTP verified successfully'})
         else:
@@ -114,11 +104,10 @@ def get_new_otp(request):
     buffer = BytesIO()
     qr_img.save(buffer, format="PNG")
     buffer.seek(0)
-    file_name = f'{user.username}_otp_qr.png'  # You can customize the file name
+    file_name = f'{user.username}_otp_qr.png' 
     profile.qrcode_image.save(file_name, File(buffer), save=True)
     serializer=ProfileSerializer(instance=profile)
     return response.Response(data=serializer.data)  # Save to the ImageField    
-    # return HttpResponse(buffer, content_type="image/png")
 
 
 
