@@ -37,7 +37,9 @@ class News(GeneralModel):
 
     creator = models.ForeignKey(
         'accounts.User',
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True
     )
     types=models.CharField(
         max_length=100,
@@ -49,7 +51,9 @@ class News(GeneralModel):
 
     timer=models.ForeignKey(
         'app.Timer',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )  
     def __str__(self)->str:
         return self.title
@@ -109,8 +113,8 @@ class News(GeneralModel):
         now_date=timezone.now()
         if self.timer.publish_date is not None:
             if self.timer.publish_date > now_date:
-                result=now_date - self.publish_date
-                return result.total_seconds()
+                result= self.timer.publish_date - now_date
+                return round(result.total_seconds())
             return 0        
 
 

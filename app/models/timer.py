@@ -1,9 +1,12 @@
 from utils.general_model import GeneralModel
 from django.db import models
+from django.utils import timezone # Use timezone-aware datetime
+from datetime import timedelta
+
 
 class Timer(GeneralModel):
 
-    days=model.IntegerField(default=0)
+    days=models.IntegerField(default=0)
     hours=models.IntegerField(default=0)
     minutes=models.IntegerField(default=0)
     timer_duration = models.IntegerField(default=0)

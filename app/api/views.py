@@ -16,9 +16,9 @@ class NewsModelset(viewsets.ModelViewSet):
     queryset=News.objects.all()
     serializer_class=NewSerializer
 
-
-    # pagination_class=NewsPagination
-    # filter_backends= [NewsFilter]
+class TimerModelset(viewsets.ModelViewSet):
+    queryset = Timer.objects.all()
+    serializer_class = TimerSerializer
 
 class ImageViewset(viewsets.ModelViewSet):
     queryset = ImageBlog.objects.all() 
@@ -50,11 +50,11 @@ class NewsCreateView(views.APIView):
         days=int(request.data.get('days', 0))
         hours=int(request.data.get('hours', 0))
         minutes=int(request.data.get('minutes', 0))
-
+        images = request.data.getlist('images')
+        files = request.data.getlist('files')
+        links = request.data.getlist('links')
         user = request.user  # Assumes authentication is in place
 
-
-        # Create the News object
         news = News.objects.create(
             title=title,
             description=content,
@@ -70,6 +70,15 @@ class NewsCreateView(views.APIView):
                     minutes=minutes
                 )
             )
+        for img in images:
+            news.images.add(ImageBlog.objects.get(id=img))
+
+        for file in files:
+            news.images.add(FileBlog.objects.get(id=file))
+
+        for link in links:
+            news.images.add(LinkBlog.objects.get(id=link))    
+
         # images=ImageBlog.objects.filter(target=)
         news.save()
 

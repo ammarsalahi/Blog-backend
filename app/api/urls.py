@@ -10,6 +10,7 @@ app_name="blogs"
 router.register('news',NewsModelset,basename="app_news")
 router.register('images',ImageViewset,basename="app_images")
 router.register('links',LinkViewset,basename="app_links")
+router.register('timers',TimerModelset,basename="app_timer")
 router.register('files',FileViewset,basename="app_files")
 router.register('news-view',NewsViewsViewset,basename="news-view")
 # router.register('news-review',NewsViewSet,basename="news-reviews")

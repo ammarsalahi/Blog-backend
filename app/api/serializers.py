@@ -20,7 +20,10 @@ class FileSerializer(serializers.ModelSerializer):
         model=FileBlog
         fields="__all__"        
                 
-        
+class TimerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Timer
+        fields="__all__"          
 
 class NewSerializer(serializers.ModelSerializer):
     class Meta:
