@@ -51,25 +51,29 @@ class OtpGenerateView(views.APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request,format=None):
         user = request.user
-        secret = pyotp.random_base32()        
         profile=Profile.objects.get(user=user)
-        profile.otp_code=secret
-        profile.save()
+        serializer=ProfileSerializer(instance=profile)
+        return response.Response(data=serializer.data)
+
+        # secret = pyotp.random_base32()        
+        # profile=Profile.objects.get(user=user)
+        # profile.otp_code=secret
+        # profile.save()
         
-        totp = pyotp.TOTP(secret)
+        # totp = pyotp.TOTP(secret)
         
-        qr_url = totp.provisioning_uri(user.email, issuer_name="BlogApp")
+        # qr_url = totp.provisioning_uri(user.email, issuer_name="BlogApp")
         
-        qr_img = qrcode.make(qr_url)
+        # qr_img = qrcode.make(qr_url)
         
-        buffer = BytesIO()
-        qr_img.save(buffer, format="PNG")
-        buffer.seek(0)
-        file_name = f'{user.username}_otp_qr.png'  # You can customize the file name
-        profile.qrcode_image.save(file_name, File(buffer), save=True)  # Save to the ImageField
+        # buffer = BytesIO()
+        # qr_img.save(buffer, format="PNG")
+        # buffer.seek(0)
+        # file_name = f'{user.username}_otp_qr.png'  # You can customize the file name
+        # profile.qrcode_image.save(file_name, File(buffer), save=True)  # Save to the ImageField
 
         
-        return HttpResponse(buffer, content_type="image/png")
+        # return HttpResponse(buffer, content_type="image/png")
 
     def post(self,request,format=None):
         user = request.user
@@ -77,7 +81,6 @@ class OtpGenerateView(views.APIView):
         
         # Retrieve the user's secret key (saved in profile or database)
         secret = Profile.objects.get(user=user).otp_code
-        
         # Create a TOTP object using the saved secret
         totp = pyotp.TOTP(secret)
         
@@ -93,6 +96,24 @@ class OtpGenerateView(views.APIView):
 def check_jwt_token(request):
     return response.Response({"message": "Token is valid", "user": request.user.username})            
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_new_otp(request):
+    secret = pyotp.random_base32()        
+    profile=Profile.objects.get(user=user)
+    profile.otp_code=secret
+    profile.save()    
+    totp = pyotp.TOTP(secret)
+    qr_url = totp.provisioning_uri(user.email, issuer_name="BlogApp")
+    qr_img = qrcode.make(qr_url)
+    buffer = BytesIO()
+    qr_img.save(buffer, format="PNG")
+    buffer.seek(0)
+    file_name = f'{user.username}_otp_qr.png'  # You can customize the file name
+    profile.qrcode_image.save(file_name, File(buffer), save=True)
+    serializer=ProfileSerializer(instance=profile)
+    return response.Response(data=serializer.data)  # Save to the ImageField    
+    # return HttpResponse(buffer, content_type="image/png")
 
 
 
