@@ -18,3 +18,5 @@ class NewsFilter(FilterSet):
             return queryset.order_by('created_at')
         else:
             return queryset.order_by('-created_at')
+
+            

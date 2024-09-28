@@ -10,6 +10,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 import calendar
+from rest_framework.filters import SearchFilter
+
+
 
 User=get_user_model()
 class NewsModelset(viewsets.ModelViewSet):
@@ -23,14 +26,20 @@ class TimerModelset(viewsets.ModelViewSet):
 class ImageViewset(viewsets.ModelViewSet):
     queryset = ImageBlog.objects.all() 
     serializer_class = ImageSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['tag']
 
 class LinkViewset(viewsets.ModelViewSet):
     queryset = LinkBlog.objects.all()
     serializer_class = LinkSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['tag']
 
 class FileViewset(viewsets.ModelViewSet):
     queryset = FileBlog.objects.all()
     serializer_class = FileSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['tag']
         
 
 class NewsViewsViewset(viewsets.ModelViewSet):
