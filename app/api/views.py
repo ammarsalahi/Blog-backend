@@ -59,9 +59,7 @@ class NewsCreateView(views.APIView):
         days=int(request.data.get('days', 0))
         hours=int(request.data.get('hours', 0))
         minutes=int(request.data.get('minutes', 0))
-        images = request.data.getlist('images')
-        files = request.data.getlist('files')
-        links = request.data.getlist('links')
+        images = request.data.get('uid')
         user = request.user  # Assumes authentication is in place
 
         news = News.objects.create(
@@ -78,16 +76,10 @@ class NewsCreateView(views.APIView):
                     hours=hours,
                     minutes=minutes
                 )
-            )
-        for img in images:
-            news.images.add(ImageBlog.objects.get(id=img))
-
-        for file in files:
-            news.images.add(FileBlog.objects.get(id=file))
-
-        for link in links:
-            news.images.add(LinkBlog.objects.get(id=link))    
-
+            )   
+        news.images.set(ImageBlog.objects.filter(tag=uid))
+        news.links.set(LinkBlog.objects.filter(tag=uid))
+        news.files.set(FileBlog.objects.filter(tag=uid))
         # images=ImageBlog.objects.filter(target=)
         news.save()
 
