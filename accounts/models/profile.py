@@ -11,5 +11,10 @@ class Profile(GeneralModel):
         blank=True,
         null=True
     )
+    qrcode_image = models.ImageField(
+        upload_to="users/qimages/",
+        null=True,
+        blank=True
+    )
     def __str__(self)->str:
         return self.otp_code

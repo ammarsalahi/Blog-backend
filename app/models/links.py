@@ -3,8 +3,5 @@ from django.db import models
 
 
 class LinkBlog(GeneralModel):
-    text=models.CharField(
-        max_length=300,
-        blank=True
-    )
     href=models.URLField(blank=True)
+    tag=models.CharField(max_length=100,null=True,blank=True)

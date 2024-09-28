@@ -33,14 +33,6 @@ class News(GeneralModel):
         default=False
     )
     
-    timer_duration = models.IntegerField(
-        default=0
-    )
-
-    publish_date=models.DateTimeField(
-        blank=True,
-        null=True
-    )
 
 
     creator = models.ForeignKey(
@@ -54,7 +46,11 @@ class News(GeneralModel):
     views=models.IntegerField(
         default=0
     )
-        
+
+    timer=models.ForeignKey(
+        'app.Timer',
+        on_delete=models.CASCADE
+    )  
     def __str__(self)->str:
         return self.title
 
@@ -79,32 +75,30 @@ class News(GeneralModel):
             return f"{total_gb} GB"
         else:
             return f"{total_kb} KB"
-
+    
     @property
     def duration_days(self):
         if self.is_timer_enabled:
-            return self.timer_duration // 86400
+            return self.timer.days
         return 0    
 
     @property
     def duration_hours(self):
         if self.is_timer_enabled:
-            remaining = self.timer_duration // 86400
-            minutes = remaining //3600
+            return self.timer.hours
         return 0
 
     @property
     def duration_minutes(self):
         if self.is_timer_enabled:
-            remaining = self.timer_duration // 3600
-            minutes = remaining //3600
+            return self.timer.minutes
         return 0
 
     @property
     def is_published_now(self):    
         now_date = timezone.now()  # Get timezone-aware current date
-        if self.publish_date is not None:
-            if now_date > self.publish_date:
+        if self.timer.publish_date is not None:
+            if now_date > self.timer.publish_date:
                 return True
             else:
                 return False    
@@ -113,20 +107,11 @@ class News(GeneralModel):
     @property
     def duration_last_time(self):
         now_date=timezone.now()
-        if self.publish_date is not None:
-            if self.publish_date > now_date:
+        if self.timer.publish_date is not None:
+            if self.timer.publish_date > now_date:
                 result=now_date - self.publish_date
                 return result.total_seconds()
-            return 0    
+            return 0        
 
-
-    def save(self, *args, **kwargs):
-        if self.publish_date is None:
-            self.publish_date = timezone.now() + timedelta(
-                days=self.duration_days,
-                hours=self.duration_hours,
-                minutes=self.duration_minutes
-            )
-        super().save(*args, **kwargs)
 
 

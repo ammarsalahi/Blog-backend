@@ -116,6 +116,7 @@ class NewsUpdateView(views.APIView):
             if request.data.get('images')=='null':
                 news.images.clear()
             else:
+                news.images.clear()
                 for image_file in images:
                     image_blog = ImageBlog.objects.create(image=image_file)
                     news.images.add(image_blog)
@@ -123,7 +124,7 @@ class NewsUpdateView(views.APIView):
             if request.data.get('links')=='null':
                 news.links.clear()
             else:
-            # Save the provided links
+                news.links.clear()
                 for link_url in links:
                     link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
                     news.links.add(link_blog)
@@ -131,6 +132,7 @@ class NewsUpdateView(views.APIView):
             if request.data.get('files')=='null':
                 news.files.clear()
             else:
+                news.files.clear()
                 for f in files:
                     file_blog = FileBlog.objects.create(file=f)
                     news.files.add(file_blog)
