@@ -55,7 +55,9 @@ class CheckUserPassword(views.APIView):
     permission_classes=[IsAuthenticated]
     def post(self,request,format=None):
         user=request.user
-        if user.check_password(request.data['oldpass']):
+        if user.check_password(request.data.get('oldpass')):
+            user.set_password(request.data.get('newpass'))
+            user.save()
             return response.Response(status=status.HTTP_201_CREATED)
         else:
             return response.Response(status=status.HTTP_400_BAD_REQUEST)    
