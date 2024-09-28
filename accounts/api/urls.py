@@ -22,4 +22,5 @@ urlpatterns+=[
     path('signup/',UserSignupView.as_view(),name="signup"),
     path('signin/',UserSigninView.as_view(),name="signin"),
     path('otp/',OtpGenerateView.as_view()),
+    path("check-token/",check_jwt_token),
 ]
