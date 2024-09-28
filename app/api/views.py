@@ -67,7 +67,7 @@ class NewsCreateView(views.APIView):
             is_timer_enabled=is_timer_enabled,
             creator=user,
         )
-        if news.is_timer_enabled:
+        if is_timer_enabled:
             news.timer=Timer.objects.create(
                     timer_duration=timer_duration,
                     days=days,
@@ -98,6 +98,7 @@ class NewsUpdateView(views.APIView):
     parser_classes = [MultiPartParser, FormParser]  # For handling file uploads
 
     def patch(self, request,pk, *args, **kwargs):
+        print(request.data)
         title = request.data.get('title')
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
@@ -113,15 +114,16 @@ class NewsUpdateView(views.APIView):
             news.title=title
             news.description=content
             news.is_timer_enabled=is_timer_enabled
-            timer=news.timer
-            if is_timer_enabled==False:
-                timer.delete()
-            else:
-                timer.days=days
-                timer.hours=hours
-                timer.minutes=minutes
-                timer.timer_duration=timer_duration
-                timer.save()
+            if is_timer_enabled:
+                if is_timer_enabled==False:
+                    news.timer=None
+                else:
+                    news.timer=Timer.objects.create(
+                        timer_duration=timer_duration,
+                        days=days,
+                        hours=hours,
+                        minutes=minutes
+                    )
 
             for img in ImageBlog.objects.filter(tag=uid):
                 news.images.add(img)    

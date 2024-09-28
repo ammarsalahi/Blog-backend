@@ -15,11 +15,15 @@ from django.core.files import File
 class UserViewset(viewsets.ModelViewSet):
     queryset=User.objects.all().order_by('-created_at')
     serializer_class=UserSerializer
+    permission_classes=[IsAuthenticated]
+
     lookup_field="username"
 
 class ProfileViewset(viewsets.ModelViewSet):
     queryset=Profile.objects.all().order_by('-created_at')
     serializer_class=ProfileSerializer
+    permission_classes=[IsAuthenticated]
+
 
 class UserSigninView(TokenObtainPairView):
     serializer_class=UserTokenSerializer 
@@ -99,6 +103,7 @@ def check_jwt_token(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_new_otp(request):
+    user=request.user
     secret = pyotp.random_base32()        
     profile=Profile.objects.get(user=user)
     profile.otp_code=secret

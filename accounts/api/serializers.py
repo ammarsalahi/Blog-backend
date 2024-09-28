@@ -6,7 +6,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        exclude=("password",'last_login')
+        exclude=('last_login',)
+    def to_representation(self,instance):
+        data=super().to_representation(instance)
+        data.pop('password',None)
+        return data    
 
 
 class UserTokenSerializer(TokenObtainPairSerializer):
