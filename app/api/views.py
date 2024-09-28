@@ -47,36 +47,30 @@ class NewsCreateView(views.APIView):
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
         timer_duration = int(request.data.get('timer_duration', 0))
+        days=int(request.data.get('days', 0))
+        hours=int(request.data.get('hours', 0))
+        minutes=int(request.data.get('minutes', 0))
 
-        images = request.FILES.getlist('images')
-        links = request.data.getlist('links') 
-        files  = request.FILES.getlist('files')
         user = request.user  # Assumes authentication is in place
 
 
-        print(request.data)
         # Create the News object
         news = News.objects.create(
             title=title,
             description=content,
             is_timer_enabled=is_timer_enabled,
-            timer_duration=timer_duration,
             creator=user,
         )
-
-        # Save the uploaded images
-        for image_file in images:
-            image_blog = ImageBlog.objects.create(image=image_file)
-            news.images.add(image_blog)
-
-        # Save the provided links
-        for link_url in links:
-            link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
-            news.links.add(link_blog)
-
-        for f in files:
-            file_blog = FileBlog.objects.create(file=f)
-            news.files.add(file_blog)
+        if news.is_timer_enabled:
+            news.timer(
+                Timer.objects.create(
+                    timer_duration=timer_duration,
+                    days=days,
+                    hours=hours,
+                    minutes=minutes
+                )
+            )
+        # images=ImageBlog.objects.filter(target=)
         news.save()
 
         return response.Response({"message": "News post created successfully"}, status=status.HTTP_201_CREATED)    
@@ -176,45 +170,3 @@ class NewsChartView(views.APIView):
         return response.Response(data)
                
 
-
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# import calendar
-# from .models import BlogPostView
-
-# @api_view(['GET'])
-# def blog_post_views_by_month_api(request):
-#     # Aggregate view counts by month for all blog posts
-#     post_views = (BlogPostView.objects
-#                   .annotate(month=TruncMonth('timestamp'))
-#                   .values('month')
-#                   .annotate(view_count=Count('id'))
-#                   .order_by('month'))
-
-#     # Format data to return month names and counts
-#     data = {
-#         'months': [calendar.month_name[item['month'].month] for item in post_views],
-#         'view_counts': [item['view_count'] for item in post_views]
-#     }
-
-#     return Response(data)
-
-# from rest_framework.response import Response
-# import calendar
-# from .models import BlogPostView
-
-# @api_view(['GET'])
-# def blog_post_views_by_month_api(request, post_id):
-#     post_views = (BlogPostView.objects.filter(post_id=post_id)
-#                   .annotate(month=TruncMonth('timestamp'))
-#                   .values('month')
-#                   .annotate(view_count=Count('id'))
-#                   .order_by('month'))
-
-#     # Format data to return month names and counts
-#     data = {
-#         'months': [calendar.month_name[item['month'].month] for item in post_views],
-#         'view_counts': [item['view_count'] for item in post_views]
-#     }
-
-#     return Response(data)
