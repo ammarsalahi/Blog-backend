@@ -20,5 +20,11 @@ class Timer(GeneralModel):
                 minutes=self.minutes
             )
         super().save(*args, **kwargs)
+    def get_days(self):
+        return self.days    
+    def get_hours(self):
+        return self.hours
+    def get_minutes(self):
+        return self.minutes       
 
 

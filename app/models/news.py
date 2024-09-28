@@ -82,40 +82,44 @@ class News(GeneralModel):
     
     @property
     def duration_days(self):
-        if self.is_timer_enabled:
-            return self.timer.days
+        if self.timer:
+            return self.timer.get_days()
         return 0    
 
     @property
     def duration_hours(self):
-        if self.is_timer_enabled:
-            return self.timer.hours
+        if self.timer:
+            return self.timer.get_hours()
         return 0
 
     @property
     def duration_minutes(self):
         if self.is_timer_enabled:
-            return self.timer.minutes
+            if self.timer:
+                return self.timer.get_minutes()
         return 0
 
     @property
     def is_published_now(self):    
-        now_date = timezone.now()  # Get timezone-aware current date
-        if self.timer.publish_date is not None:
-            if now_date > self.timer.publish_date:
-                return True
-            else:
-                return False    
-        return False
+        now_date = timezone.now() 
+        if self.timer:
+            if self.timer.publish_date is not None:
+                if now_date > self.timer.publish_date:
+                    return True
+                else:
+                    return False    
+            return False
+        return True    
             
     @property
     def duration_last_time(self):
         now_date=timezone.now()
-        if self.timer.publish_date is not None:
+        if self.timer:
             if self.timer.publish_date > now_date:
                 result= self.timer.publish_date - now_date
                 return round(result.total_seconds())
-            return 0        
+            return 0   
+        return 0         
 
 
 

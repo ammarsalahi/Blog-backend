@@ -56,12 +56,11 @@ class NewsCreateView(views.APIView):
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
         timer_duration = int(request.data.get('timer_duration', 0))
-        days=int(request.data.get('days', 0))
-        hours=int(request.data.get('hours', 0))
-        minutes=int(request.data.get('minutes', 0))
-        images = request.data.get('uid')
+        days=int(request.data.get('days',0))
+        hours=int(request.data.get('hours',0))
+        minutes=int(request.data.get('minutes',0))
+        uid = request.data.get('uid')
         user = request.user  # Assumes authentication is in place
-
         news = News.objects.create(
             title=title,
             description=content,
@@ -69,14 +68,13 @@ class NewsCreateView(views.APIView):
             creator=user,
         )
         if news.is_timer_enabled:
-            news.timer(
-                Timer.objects.create(
+            news.timer=Timer.objects.create(
                     timer_duration=timer_duration,
                     days=days,
                     hours=hours,
                     minutes=minutes
-                )
-            )   
+            )
+               
         news.images.set(ImageBlog.objects.filter(tag=uid))
         news.links.set(LinkBlog.objects.filter(tag=uid))
         news.files.set(FileBlog.objects.filter(tag=uid))
@@ -104,47 +102,41 @@ class NewsUpdateView(views.APIView):
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
         timer_duration = int(request.data.get('timer_duration', 0))
+        days=int(request.data.get('days',0))
+        hours=int(request.data.get('hours',0))
+        minutes=int(request.data.get('minutes',0))
+        uid = request.data.get('uid')
+        user = request.user 
 
-        images = request.FILES.getlist('images')
-        links = request.data.getlist('links') 
-        files  = request.FILES.getlist('files')
-        print(request.data)
-        
         try:
-            news = News.objects.get(id=pk)
+            news=News.objects.get(pk=pk)
             news.title=title
             news.description=content
             news.is_timer_enabled=is_timer_enabled
-            news.timer_duration=timer_duration
-        # Save the uploaded images
-            if request.data.get('images')=='null':
-                news.images.clear()
+            timer=news.timer
+            if is_timer_enabled==False:
+                timer.delete()
             else:
-                news.images.clear()
-                for image_file in images:
-                    image_blog = ImageBlog.objects.create(image=image_file)
-                    news.images.add(image_blog)
+                timer.days=days
+                timer.hours=hours
+                timer.minutes=minutes
+                timer.timer_duration=timer_duration
+                timer.save()
 
-            if request.data.get('links')=='null':
-                news.links.clear()
-            else:
-                news.links.clear()
-                for link_url in links:
-                    link_blog = LinkBlog.objects.create(href=link_url,text=link_url)
-                    news.links.add(link_blog)
-            
-            if request.data.get('files')=='null':
-                news.files.clear()
-            else:
-                news.files.clear()
-                for f in files:
-                    file_blog = FileBlog.objects.create(file=f)
-                    news.files.add(file_blog)
+            for img in ImageBlog.objects.filter(tag=uid):
+                news.images.add(img)    
+
+            for file in FileBlog.objects.filter(tag=uid):
+                news.files.add(file)  
+
+            for link in LinkBlog.objects.filter(tag=uid):
+                news.links.add(link)
             news.save()
+            return response.Response(status=status.HTTP_200_OK)
         except News.DoesNotExist:
-            return response.Response(status=status.HTTP_404_NOT_FOUND)    
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
 
-        return response.Response( status=status.HTTP_200_OK)    
+       
 
 
 
