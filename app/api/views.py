@@ -18,6 +18,20 @@ User=get_user_model()
 class NewsModelset(viewsets.ModelViewSet):
     queryset=News.objects.all()
     serializer_class=NewSerializer
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        for img in instance.images.all():
+            img.delete()
+        for link in instance.links.all():
+            link.delete()
+        for file in instance.files.all():
+            file.delete()        
+        instance.delete()
+
 
 class TimerModelset(viewsets.ModelViewSet):
     queryset = Timer.objects.all()
@@ -74,10 +88,22 @@ class NewsCreateView(views.APIView):
                     hours=hours,
                     minutes=minutes
             )
+
                
         news.images.set(ImageBlog.objects.filter(tag=uid))
         news.links.set(LinkBlog.objects.filter(tag=uid))
         news.files.set(FileBlog.objects.filter(tag=uid))
+        for img in news.images.all():
+            img.tag=f"{news.id}-{news.title}"
+            img.save()
+
+        for file in news.files.all():
+            file.tag=f"{news.id}-{news.title}"
+            file.save()   
+
+        for link in news.links.all():
+            link.tag=f"{news.id}-{news.title}"
+            link.save() 
         # images=ImageBlog.objects.filter(target=)
         news.save()
 
