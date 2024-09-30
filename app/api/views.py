@@ -141,16 +141,17 @@ class NewsUpdateView(views.APIView):
             news.description=content
             news.is_timer_enabled=is_timer_enabled
             if is_timer_enabled:
-                if is_timer_enabled==False:
-                    news.timer=None
-                else:
+                if is_timer_enabled:
                     news.timer=Timer.objects.create(
                         timer_duration=timer_duration,
                         days=days,
                         hours=hours,
                         minutes=minutes
                     )
-
+                else:
+                    if hasattr(news, 'timer'):
+                        news.timer.delete()  # Delete the existing timer
+                        news.timer = None
             for img in ImageBlog.objects.filter(tag=uid):
                 news.images.add(img)    
 
