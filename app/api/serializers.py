@@ -18,7 +18,12 @@ class LinkSerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model=FileBlog
-        fields="__all__"        
+        fields="__all__" 
+    def to_representation(self, instance):
+        data = super(FileSerializer, self).to_representation(instance)     
+        data['filename']=instance.name      
+        data['fileformat']=instance.file_format   
+        return data
                 
 class TimerSerializer(serializers.ModelSerializer):
     class Meta:
