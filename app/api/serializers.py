@@ -23,6 +23,7 @@ class FileSerializer(serializers.ModelSerializer):
         data = super(FileSerializer, self).to_representation(instance)     
         data['filename']=instance.name      
         data['fileformat']=instance.file_format   
+        data['filesize']=instance.filesize
         return data
                 
 class TimerSerializer(serializers.ModelSerializer):

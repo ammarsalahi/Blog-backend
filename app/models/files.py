@@ -31,14 +31,14 @@ class FileBlog(GeneralModel):
         if size<=0:
             return f"{0}KB"
         else:
-            total_kb=round(size/1024,0)
-            total_mb=round(total_kb/1024,0)
-            total_gb=round(total_mb/1024,0)
+            total_kb=round(size/1024)
+            total_mb=round(total_kb/1024)
+            total_gb=round(total_mb/1024)
 
             if total_kb > 1000:
-                return f"{total_mb} MB"
+                return f"{total_mb}MB"
             elif total_mb > 1000:
-                return f"{total_gb} GB"
+                return f"{total_gb}GB"
             else:
-                return f"{total_kb} KB"            
+                return f"{total_kb}KB"            
         
