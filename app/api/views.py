@@ -69,6 +69,7 @@ class NewsCreateView(views.APIView):
         title = request.data.get('title')
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
+        is_file_show = request.data.get('is_file_show') == 'true'
         timer_duration = int(request.data.get('timer_duration', 0))
         days=int(request.data.get('days',0))
         hours=int(request.data.get('hours',0))
@@ -86,7 +87,8 @@ class NewsCreateView(views.APIView):
                     timer_duration=timer_duration,
                     days=days,
                     hours=hours,
-                    minutes=minutes
+                    minutes=minutes,
+                    is_files_in_times=is_file_show
             )
 
                
@@ -128,6 +130,7 @@ class NewsUpdateView(views.APIView):
         title = request.data.get('title')
         content = request.data.get('description')
         is_timer_enabled = request.data.get('is_timer_enabled') == 'true'
+        is_file_show = request.data.get('is_file_show') == 'true'
         timer_duration = int(request.data.get('timer_duration', 0))
         days=int(request.data.get('days',0))
         hours=int(request.data.get('hours',0))
@@ -140,6 +143,7 @@ class NewsUpdateView(views.APIView):
             news.title=title
             news.description=content
             news.is_timer_enabled=is_timer_enabled
+            news.is_files_in_times=is_file_show
             
             news.timer=Timer.objects.create(
                 timer_duration=timer_duration,
@@ -197,3 +201,22 @@ class NewsChartView(views.APIView):
         return response.Response(data)
                
 
+class DownloadFileView(views.APIView):
+    def get(self,request,pk,format=None):
+        try:
+            news=News.objects.get(id=pk)
+            return response.Response(
+                data=NewSerializer(instance=news).data
+            )
+        except News.DoesNotExist:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)    
+
+class DeleteOneFile(views.APIView):
+    def get(self,request,tag,format=None):
+        try:
+            files=FileBlog.objects.filter(tag=tag)
+            for f in files:
+                f.delete()
+            return response.Response(status=status.HTTP_200_OK)    
+        except FileBlog.DoesNotExist:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)

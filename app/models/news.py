@@ -125,16 +125,10 @@ class News(GeneralModel):
         return 0         
     @property
     def is_file_show(self):
-        if self.is_published_now:
-            if self.is_files_in_times:
-                return True
-            else:
-                return False
+        if self.is_files_in_times:
+            return self.is_published_now
         else:
-            if self.is_files_in_times:
-                return False
-            else:
-                return True
+            return True    
             
 
 

@@ -21,6 +21,8 @@ urlpatterns += [
     path('add-news/',NewsCreateView.as_view()),
     path('edit-news/<int:pk>/',NewsUpdateView.as_view()),
     path('news-review/<int:pk>/',NewsViewSet.as_view({'get':'retrieve'})),
-    path("chart-news/",NewsChartView.as_view())
+    path("chart-news/",NewsChartView.as_view()),
+    path("download-files/<int:pk>",DownloadFileView.as_view()),
+    path('clear-files/<str:tag>',DeleteOneFile.as_view())
 ]
 
