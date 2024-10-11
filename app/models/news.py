@@ -123,6 +123,19 @@ class News(GeneralModel):
                 return round(result.total_seconds())
             return 0   
         return 0         
+    @property
+    def is_file_show(self):
+        if self.is_published_now:
+            if self.is_files_in_times:
+                return True
+            else:
+                return False
+        else:
+            if self.is_files_in_times:
+                return False
+            else:
+                return True
+            
 
 
 
