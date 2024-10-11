@@ -55,6 +55,9 @@ class News(GeneralModel):
         null=True,
         blank=True
     )  
+    is_files_in_times = models.BooleanField(
+        default=False
+    )
     def __str__(self)->str:
         return self.title
 
